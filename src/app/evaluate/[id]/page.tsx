@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
-import { ArrowLeft, Star, MessageSquare, Save, ShieldAlert, Award, FileText } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { ArrowLeft, Star, MessageSquare, Save, ShieldAlert, Award } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { UserSession } from '@/lib/auth'
 
 export default function EvaluationPage() {
@@ -61,7 +61,7 @@ export default function EvaluationPage() {
                 router.push('/projects')
             }
         } catch (err) {
-            console.error('Submit error:', err)
+            console.error('Submit failed')
         } finally {
             setSubmitting(false)
         }
@@ -70,120 +70,119 @@ export default function EvaluationPage() {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#f1e4de]">
-                <div className="w-12 h-12 border-4 border-[#d9a0a6]/30 border-t-[#d9a0a6] rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-[#d9a0a6] border-t-transparent rounded-full animate-spin" />
             </div>
         )
     }
 
     return (
-        <main className="min-h-screen pt-32 pb-16 px-6 relative bg-[#f1e4de]">
+        <main className="min-h-screen pt-32 pb-16 px-6 relative bg-dot">
             <Navbar user={session} />
-            <div className="bg-dot" />
 
-            <div className="max-w-4xl mx-auto relative z-10 space-y-8">
+            <div className="max-w-4xl mx-auto space-y-8">
                 <button
                     onClick={() => router.back()}
-                    className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-[#4a3f3a] transition-colors group bg-white border border-[#4a3f3a] px-5 py-2.5 rounded-lg shadow-xl shadow-[#4a3f3a]/5"
+                    className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#4a3f3a] hover:opacity-70 transition-all group"
                 >
                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                    Back to Listing
+                    กลับสู่หน้ารายการ
                 </button>
 
-                <form onSubmit={handleSubmit} className="space-y-8">
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="box-container bg-white shadow-2xl"
-                    >
-                        {/* Project ID Header */}
-                        <div className="box-header flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-[#d9a0a6] flex items-center justify-center">
-                                    <Award className="w-5 h-5 text-white" />
-                                </div>
-                                <h4 className="text-[11px] font-black text-[#4a3f3a] uppercase tracking-widest">Formal Evaluation Protocol</h4>
+                <form onSubmit={handleSubmit} className="box-container overflow-hidden bg-white">
+                    <div className="box-header flex items-center justify-between py-8">
+                        <div className="flex items-center gap-4">
+                            <Award className="w-8 h-8 text-[#d9a0a6]" />
+                            <div>
+                                <span className="badge-academic text-[9px]">Official Evaluation Protocol</span>
+                                <h1 className="text-3xl font-black text-[#4a3f3a] tracking-tight uppercase leading-none mt-1">{project?.name}</h1>
                             </div>
-                            <span className="text-[10px] font-black text-accent uppercase tracking-widest">ID: {project?.id.split('-')[0]}</span>
                         </div>
+                        <div className="text-right hidden sm:block">
+                            <p className="text-[10px] font-black text-accent uppercase tracking-widest mb-1">Project Ref</p>
+                            <p className="text-sm font-black text-[#4a3f3a]">{project?.id.split('-')[0]}</p>
+                        </div>
+                    </div>
 
-                        <div className="box-content space-y-10">
-                            <section className="space-y-4 border-b border-border pb-8">
-                                <h1 className="text-4xl font-black text-[#4a3f3a] leading-tight uppercase tracking-tighter">{project?.name}</h1>
-                                <div className="flex gap-4 items-start bg-[#f8f1ee]/40 p-5 rounded-xl border border-border/40">
-                                    <FileText className="w-5 h-5 text-accent shrink-0 mt-0.5" />
-                                    <p className="text-soft font-medium leading-relaxed italic text-base">"{project?.description}"</p>
-                                </div>
-                            </section>
+                    <div className="box-content space-y-12">
+                        {/* Project Details Block */}
+                        <section className="p-8 bg-[#f8f1ee] rounded-[4px] border-2 border-[#e9d4cd] space-y-4">
+                            <h3 className="text-xs font-black text-[#4a3f3a] uppercase tracking-widest border-b border-[#e9d4cd] pb-2">คำอธิบายโครงงาน</h3>
+                            <p className="text-soft font-medium leading-relaxed italic">
+                                "{project?.description}"
+                            </p>
+                        </section>
 
-                            {/* Evaluation Logic Box */}
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                                <div className="space-y-6">
-                                    <div className="flex items-center justify-between">
-                                        <label className="text-sm font-black text-[#4a3f3a] uppercase tracking-widest">Performance Score</label>
-                                        <div className="text-4xl font-black text-[#d9a0a6] tabular-nums">
-                                            {score}<span className="text-lg text-accent ml-1">/10</span>
-                                        </div>
-                                    </div>
-                                    <div className="p-8 bg-[#f8f1ee]/50 rounded-2xl border border-border/30 shadow-inner">
-                                        <input
-                                            type="range"
-                                            min="1"
-                                            max="10"
-                                            step="1"
-                                            className="w-full h-3 bg-white rounded-full appearance-none cursor-pointer accent-[#d9a0a6] border border-border/40"
-                                            value={score}
-                                            onChange={(e) => setScore(parseInt(e.target.value))}
-                                        />
-                                        <div className="flex justify-between mt-6 px-1">
-                                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                                                <span key={n} className={`text-[10px] font-black transition-all ${score === n ? 'text-[#d9a0a6] scale-150' : 'text-accent'}`}>
-                                                    {n}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
+                        {/* Evaluation Form Sections */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div className="space-y-6">
+                                <div className="space-y-1">
+                                    <label className="text-xs font-black text-[#4a3f3a] uppercase tracking-widest">การให้คะแนน (1-10)</label>
+                                    <p className="text-[10px] text-accent font-bold uppercase">Quantitative Performance Metric</p>
                                 </div>
 
-                                <div className="space-y-4">
-                                    <label className="text-sm font-black text-[#4a3f3a] uppercase tracking-widest leading-relaxed">Qualitative Commentary</label>
-                                    <textarea
-                                        placeholder="กรุณาให้ความเห็นเชิงวิชาการเพื่อการพัฒนาโครงงาน..."
-                                        className="minimal-input w-full p-5 resize-none min-h-[160px] text-sm font-medium leading-relaxed bg-white border-2"
-                                        value={comment}
-                                        onChange={(e) => setComment(e.target.value)}
+                                <div className="p-10 border-2 border-[#e9d4cd] rounded-[4px] flex flex-col items-center gap-8 bg-white group hover:border-[#d9a0a6] transition-colors">
+                                    <div className="text-6xl font-black text-[#1a1a1a] tabular-nums tracking-tighter">
+                                        {score}<span className="text-xl text-accent ml-1">/10</span>
+                                    </div>
+                                    <input
+                                        type="range"
+                                        min="1"
+                                        max="10"
+                                        step="1"
+                                        className="w-full h-2 bg-[#f8f1ee] rounded-full appearance-none cursor-pointer accent-[#d9a0a6]"
+                                        value={score}
+                                        onChange={(e) => setScore(parseInt(e.target.value))}
                                     />
-                                    <p className="text-[10px] font-black text-accent uppercase tracking-widest text-right italic">Max 500 Characters</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="box-footer bg-[#f8f1ee]/30 flex flex-col sm:flex-row items-center justify-between gap-6 py-8 px-10">
-                            <div className="flex gap-4 items-center">
-                                <div className="w-12 h-12 rounded-full border-2 border-[#d9a0a6] flex items-center justify-center bg-white shadow-xl shadow-[#d9a0a6]/10">
-                                    <ShieldAlert className="w-6 h-6 text-[#d9a0a6]" />
-                                </div>
-                                <div className="space-y-0.5">
-                                    <p className="text-[11px] font-black text-[#4a3f3a] uppercase tracking-widest">Protocol Encryption Active</p>
-                                    <p className="text-[10px] font-bold text-soft leading-tight">Your identity is masked. Data is for internal research only.</p>
+                                    <div className="flex justify-between w-full px-2">
+                                        {[1, 10].map((n) => (
+                                            <span key={n} className="text-[10px] font-black text-accent uppercase">Index {n}</span>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
 
-                            <button
-                                disabled={submitting}
-                                type="submit"
-                                className="btn-minimal min-w-[240px] py-5 text-sm font-black shadow-2xl shadow-[#4a3f3a]/20 bg-[#4a3f3a] hover:bg-[#2e2624]"
-                            >
-                                {submitting ? (
-                                    <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" />
-                                ) : (
-                                    <span className="flex items-center gap-3">
-                                        Submit Evaluation
-                                        <Save className="w-4 h-4" />
-                                    </span>
-                                )}
-                            </button>
+                            <div className="space-y-6">
+                                <div className="space-y-1">
+                                    <label className="text-xs font-black text-[#4a3f3a] uppercase tracking-widest">ความคิดเห็นเพิ่มเติม</label>
+                                    <p className="text-[10px] text-accent font-bold uppercase">Qualitative Academic Feedback</p>
+                                </div>
+                                <textarea
+                                    placeholder="กรุณาระบุข้อเสนอแนะเพื่อการปรับปรุง..."
+                                    className="minimal-input h-full min-h-[160px] resize-none text-sm font-medium leading-relaxed"
+                                    value={comment}
+                                    onChange={(e) => setComment(e.target.value)}
+                                />
+                            </div>
                         </div>
-                    </motion.div>
+
+                        {/* Security Notice */}
+                        <div className="p-6 border-2 border-dashed border-[#e9d4cd] rounded-[4px] flex items-center gap-6 bg-[#f8f1ee]/30">
+                            <div className="w-12 h-12 rounded-full bg-[#1a1a1a] flex items-center justify-center shrink-0">
+                                <ShieldAlert className="w-6 h-6 text-[#d9a0a6]" />
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-black text-[#4a3f3a] uppercase tracking-widest mb-1">ความเป็นส่วนตัวของผู้ประเมิน</p>
+                                <p className="text-[10px] font-medium text-soft leading-tight">ระบบจะทำการปกปิดตัวตนของผู้ประเมินโดยสมบูรณ์ คะแนนและข้อเสนอแนะจะถูกนำไปใช้ในเชิงสถิติเท่านั้น</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="box-footer flex justify-center py-10">
+                        <button
+                            disabled={submitting}
+                            type="submit"
+                            className="btn-minimal min-w-[300px] shadow-xl"
+                        >
+                            {submitting ? (
+                                <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : (
+                                <span className="flex items-center gap-3">
+                                    บันทึกผลการประเมินโครงการ
+                                    <Save className="w-5 h-5" />
+                                </span>
+                            )}
+                        </button>
+                    </div>
                 </form>
             </div>
         </main>
