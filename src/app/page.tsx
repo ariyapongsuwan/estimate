@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Star, Shield, CheckCircle, Award, Users, Zap, Briefcase, ChevronRight } from 'lucide-react'
+import { ArrowRight, Star, Shield, CheckCircle, Award, Users, Zap, Briefcase, ChevronRight, Hash, CheckCircle2 } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import { motion } from 'framer-motion'
 import { UserSession } from '@/lib/auth'
@@ -51,7 +51,7 @@ export default function HomePage() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed mb-12"
           >
-            ยินดีต้อนรับสู่ระบบประเมินผลโครงงานนักศึกษาอย่างเป็นทางการ
+            ยินดีต้อนรับสู่ระบบประเมินผลโครงงานหน้านักศึกษาอย่างเป็นทางการ
             ระบบนี้ถูกออกแบบมาเพื่อความโปร่งใสและประสิทธิภาพในการเก็บข้อมูลทางวิชาการที่แม่นยำที่สุด
           </motion.p>
 
@@ -61,7 +61,10 @@ export default function HomePage() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-col sm:flex-row justify-center gap-4"
           >
-            <Link href="/projects" className="btn-primary group">
+            <Link
+              href={session ? "/projects" : "/login"}
+              className="btn-primary group"
+            >
               เริ่มต้นการประเมิน
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -167,7 +170,7 @@ export default function HomePage() {
 
       {/* Footer Branding */}
       <footer className="py-12 px-6 border-t border-slate-100">
-        <div className="max-w-7xl mx-auto flex flex-col md:row items-center justify-between gap-8 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
           <p className="text-xs font-black uppercase tracking-widest text-slate-400">
             © 2026 Academic Evaluation Protocol • All Rights Reserved
           </p>

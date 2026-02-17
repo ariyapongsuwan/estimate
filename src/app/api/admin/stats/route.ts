@@ -47,13 +47,19 @@ export async function GET() {
             }
         })
 
+        const topProject = projectStats.length > 0 ? projectStats[0] : null
+        const totalEvaluations = await prisma.evaluation.count()
+
         return NextResponse.json({
-            projectStats,
-            allEvaluations,
+            projectStats, // For Bar Chart & Table
+            allEvaluations, // For Log Table
             summary: {
                 totalStudents,
                 evaluatedCount,
-                percentComplete: totalStudents > 0 ? (evaluatedCount / totalStudents * 100).toFixed(1) : 0
+                notEvaluatedCount: totalStudents - evaluatedCount,
+                percentComplete: totalStudents > 0 ? ((evaluatedCount / totalStudents) * 100).toFixed(1) : 0,
+                topProject: topProject ? { name: topProject.name, score: topProject.averageScore } : null,
+                totalEvaluations
             }
         })
     } catch (error) {

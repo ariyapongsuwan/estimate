@@ -37,8 +37,8 @@ export default function Navbar({ user }: NavbarProps) {
                         <Link
                             href="/"
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${isActive('/')
-                                    ? 'bg-white text-primary shadow-sm'
-                                    : 'text-slate-500 hover:text-slate-900'
+                                ? 'bg-white text-primary shadow-sm'
+                                : 'text-slate-500 hover:text-slate-900'
                                 }`}
                         >
                             <Home className="w-4 h-4" />
@@ -49,8 +49,8 @@ export default function Navbar({ user }: NavbarProps) {
                             <Link
                                 href="/admin"
                                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${isActive('/admin')
-                                        ? 'bg-white text-primary shadow-sm'
-                                        : 'text-slate-500 hover:text-slate-900'
+                                    ? 'bg-white text-primary shadow-sm'
+                                    : 'text-slate-500 hover:text-slate-900'
                                     }`}
                             >
                                 <LayoutDashboard className="w-4 h-4" />
@@ -65,7 +65,7 @@ export default function Navbar({ user }: NavbarProps) {
                         <div className="hidden lg:flex flex-col items-end">
                             <span className="text-sm font-bold text-slate-900">{user?.name}</span>
                             <span className="text-[10px] uppercase font-black tracking-wider text-primary">
-                                {user?.isAdmin ? 'Administrator' : `YEAR ${user?.year}`}
+                                {user?.isAdmin ? 'Administrator' : `ชั้นปี ${user?.year}`}
                             </span>
                         </div>
 

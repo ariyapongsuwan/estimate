@@ -174,11 +174,11 @@ export default function LoginPage() {
                                                         value={year}
                                                         onChange={(e) => setYear(e.target.value)}
                                                     >
-                                                        <option value="1">Year 1</option>
-                                                        <option value="2">Year 2</option>
-                                                        <option value="3">Year 3</option>
-                                                        <option value="4">Year 4</option>
-                                                        <option value="5">Year 5+</option>
+                                                        <option value="1">ชั้นปี 1</option>
+                                                        <option value="2">ชั้นปี 2</option>
+                                                        <option value="3">ชั้นปี 3</option>
+                                                        <option value="4">ชั้นปี 4</option>
+                                                        <option value="5">ชั้นปี 5+</option>
                                                     </select>
                                                 </div>
                                             </div>
