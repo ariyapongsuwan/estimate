@@ -1,16 +1,21 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowRight, Star, Shield, CheckCircle, Award, Users, Zap, Briefcase, ChevronRight } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import { motion } from 'framer-motion'
-// Note: session is usually handled via a hook or prop in client components if needed, 
-// for simplicity in this redesign UI focus, I'll keep the layout structure.
-// Since the original was 'async', I'll make this a client component for animations.
+import { UserSession } from '@/lib/auth'
 
 export default function HomePage() {
-  // In a real app, we'd fetch session here or pass from layout
-  const session = null
+  const [session, setSession] = useState<UserSession | null>(null)
+
+  useEffect(() => {
+    fetch('/api/auth/session')
+      .then(res => res.json())
+      .then(data => setSession(data))
+      .catch(err => console.error('Session fetch error:', err))
+  }, [])
 
   return (
     <main className="min-h-screen bg-white selection:bg-primary/30 selection:text-primary relative overflow-hidden">
