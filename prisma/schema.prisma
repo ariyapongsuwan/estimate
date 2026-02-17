@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id          String       @id @default(uuid())
+  name        String
+  studentId   String       @unique
+  year        Int
+  isAdmin     Boolean      @default(false)
+  evaluations Evaluation[]
+  createdAt   DateTime     @default(now())
+}
+
+model Project {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  evaluations Evaluation[]
+  createdAt   DateTime     @default(now())
+}
+
+model Evaluation {
+  id        String   @id @default(uuid())
+  score     Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId String
+
+  evaluator   User   @relation(fields: [evaluatorId], references: [id])
+  evaluatorId String
+
+  @@unique([projectId, evaluatorId]) // Each student can evaluate each project only once
+}
